@@ -21,7 +21,25 @@ module Api
       end
     end
 
-    # @TODO: Add other controller actions (destroy, assign, etc.) here.
+    def destroy
+      @task.destroy
+      head :no_content
+    end
+
+    def assign
+      user = User.find(params[:user_id]) # ensure you pass the correct parameter from the test
+      @task.update(user: user)
+      render json: @task
+    end
+
+    def progress
+      if params[:progress].to_i.between?(0, 100) # Ensuring progress is between 0 and 100
+        @task.update(progress: params[:progress])
+        render json: @task
+      else
+        render json: { error: 'Progress must be between 0 and 100' }, status: :unprocessable_entity
+      end
+    end
 
     private
 
@@ -32,5 +50,6 @@ module Api
     def task_params
       params.require(:task).permit(:title, :description, :due_date, :status, :priority)
     end
+
   end
 end
