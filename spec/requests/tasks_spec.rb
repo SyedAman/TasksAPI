@@ -24,11 +24,11 @@ describe 'POST /api/tasks', type: :request do
   end
 
   context 'when the request is invalid' do
-    before { post '/api/tasks', params: { title: 'Only Title' } } # assuming description and due_date are required
+    before { post '/api/tasks', params: { task: { title: 'Only Title' } } } # assuming description and due_date are required
 
     it 'returns status code 422' do
       expect(response).to have_http_status(422)
-      expect(response.body).to match(/Validation failed/)
+      expect(response.body).to include("can't be blank")
     end
   end
 end
