@@ -7,13 +7,15 @@ Rails.application.routes.draw do
         post 'assign'
         put 'progress'
       end
+      collection do
+        get 'overdue'
+        get 'status/:status', to: 'tasks#by_status'
+        get 'completed'
+        get 'statistics'
+      end
     end
     resources :users do
       resources :tasks, only: [:index]
     end
-    get 'tasks/overdue', to: 'tasks#overdue'
-    get 'tasks/status/:status', to: 'tasks#by_status'
-    get 'tasks/completed', to: 'tasks#completed'
-    get 'tasks/statistics', to: 'tasks#statistics'
   end
 end

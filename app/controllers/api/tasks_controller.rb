@@ -47,6 +47,11 @@ module Api
       end
     end
 
+    def overdue
+      overdue_tasks = Task.where('due_date < ? AND status = ?', Time.current, 'pending')
+      render json: overdue_tasks
+    end
+
     private
 
     def set_task
