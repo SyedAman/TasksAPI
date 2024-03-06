@@ -2,6 +2,11 @@ module Api
   class TasksController < ApplicationController
     before_action :set_task, only: %i[update destroy assign progress]
 
+    def index # For GET /api/tasks
+      tasks = Task.all
+      render json: tasks
+    end
+
     def create
       task = Task.new(task_params.merge(user_id: params.dig(:task, :user_id)))
       if task.save
