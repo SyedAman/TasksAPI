@@ -47,6 +47,13 @@ module Api
       end
     end
 
+    def by_status
+      status = params[:status] # 'completed' or 'pending'
+      tasks = Task.where(status: status)
+
+      render json: tasks
+    end
+
     def completed
       start_date = params[:startDate].to_date.beginning_of_day
       end_date = params[:endDate].to_date.end_of_day
