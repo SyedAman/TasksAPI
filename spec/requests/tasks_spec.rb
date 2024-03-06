@@ -2,13 +2,23 @@ require 'rails_helper'
 
 # Create Task (POST /api/tasks)
 describe 'POST /api/tasks', type: :request do
-  let(:valid_attributes) { { title: 'New Task', description: 'Task Description', due_date: '2023-12-31' } }
+  let(:valid_attributes) do
+    {
+      task: {
+        title: 'New Task',
+        description: 'Task Description',
+        due_date: '2023-12-31',
+        status: :pending,
+        priority: :medium
+      }
+    }
+  end
 
   context 'when the request is valid' do
     before { post '/api/tasks', params: valid_attributes }
 
     it 'creates a new task' do
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(201), response.body
       expect(json['title']).to eq('New Task')
     end
   end
