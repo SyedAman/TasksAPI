@@ -18,13 +18,13 @@ describe 'POST /api/tasks', type: :request do
     before { post '/api/tasks', params: valid_attributes }
 
     it 'creates a new task' do
-      expect(response).to have_http_status(201), response.body
+      expect(response).to have_http_status(201)
       expect(json['title']).to eq('New Task')
     end
   end
 
   context 'when the request is invalid' do
-    before { post '/api/tasks', params: { task: { title: 'Only Title' } } } # assuming description and due_date are required
+    before { post '/api/tasks', params: { task: { title: 'Only Title' } } }
 
     it 'returns status code 422' do
       expect(response).to have_http_status(422)
@@ -36,15 +36,25 @@ end
 # Update Task (PUT /api/tasks/{taskId})
 describe 'PUT /api/tasks/:id', type: :request do
   let!(:task) { create(:task) }
-  let(:valid_attributes) { { title: 'Updated Task', description: 'Updated Description', due_date: '2023-12-31', status: 'completed' } }
+  let(:valid_attributes) do
+    {
+      task: {
+        title: 'Updated Task',
+        description: 'Updated Description',
+        due_date: '2023-12-31',
+        status: 'completed'
+      }
+    }
+  end
 
   context 'when the record exists' do
     before { put "/api/tasks/#{task.id}", params: valid_attributes }
 
     it 'updates the record' do
+      updated_task = Task.find(task.id)
       expect(response).to have_http_status(200)
-      expect(task.reload.status).to eq('completed')
-      expect(task.completed_date).not_to be_nil
+      expect(updated_task.status).to eq('completed')
+      expect(updated_task.completed_date).not_to be_nil
     end
   end
 end
@@ -57,7 +67,7 @@ describe 'DELETE /api/tasks/:id', type: :request do
 
   it 'deletes the task' do
     expect(response).to have_http_status(204)
-    expect { task.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    expect { Task.find(task.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 end
 
@@ -83,7 +93,7 @@ describe 'POST /api/tasks/:id/assign', type: :request do
 
   it 'assigns the task to the user' do
     expect(response).to have_http_status(200)
-    expect(task.reload.user).to eq(user)
+    expect(Task.find(task.id).user).to eq(user)
   end
 end
 
@@ -96,7 +106,7 @@ describe 'GET /api/users/:user_id/tasks', type: :request do
 
   it 'returns tasks for the specified user' do
     expect(response).to have_http_status(200)
-    expect(json.size).to eq(5)  # Assuming json is a helper method to parse JSON responses
+    expect(json.size).to eq(5)
   end
 end
 
@@ -105,18 +115,22 @@ describe 'PUT /api/tasks/:id/progress', type: :request do
   let!(:task) { create(:task) }
 
   context 'when the request is valid' do
-    let(:valid_progress) { { progress: 50 } }
+    let(:valid_progress) do
+      { task: { progress: 50 } }
+    end
 
     before { put "/api/tasks/#{task.id}/progress", params: valid_progress }
 
     it 'updates the task progress' do
       expect(response).to have_http_status(200)
-      expect(task.reload.progress).to eq(50)
+      expect(Task.find(task.id).progress).to eq(50)
     end
   end
 
   context 'when the request is invalid' do
-    let(:invalid_progress) { { progress: 150 } } # Assuming progress cannot exceed 100
+    let(:invalid_progress) do
+      { task: { progress: 150 } } # Assuming progress cannot exceed 100
+    end
 
     before { put "/api/tasks/#{task.id}/progress", params: invalid_progress }
 
@@ -220,6 +234,6 @@ describe 'GET /api/tasks', type: :request do
   it 'returns tasks ordered by priority and due date' do
     expect(response).to have_http_status(200)
     priorities = json.map { |t| t['priority'] }
-    expect(priorities).to eq(%w[high medium low])
+    expect(priorities).to eq(['high', 'medium', 'low'])
   end
 end
