@@ -52,6 +52,18 @@ module Api
       render json: overdue_tasks
     end
 
+    def statistics
+      total_tasks = Task.count
+      completed_tasks = Task.completed.count
+      completion_percentage = (completed_tasks.to_f / total_tasks * 100).round(2)
+
+      render json: {
+        total_tasks: total_tasks,
+        completed_tasks: completed_tasks,
+        completion_percentage: completion_percentage
+      }
+    end
+
     private
 
     def set_task
