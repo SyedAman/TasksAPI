@@ -24,7 +24,7 @@ RSpec.describe 'Tasks API', type: :request do
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
-        expect(response.body).to match(/Validation failed/)
+        expect(response.body).to include("can't be blank")
       end
     end
   end
