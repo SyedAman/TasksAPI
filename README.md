@@ -10,12 +10,12 @@ To get started with the Rails Task Management API, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://your-repository-link.git
+   git clone https://github.com/SyedAman/TasksAPI.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd task_management_api
+   cd TasksAPI
    ```
 
 3. Install dependencies:
