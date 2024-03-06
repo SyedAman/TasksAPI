@@ -3,7 +3,7 @@ module Api
     before_action :set_task, only: %i[update destroy assign progress]
 
     def create
-      task = Task.new(task_params)
+      task = Task.new(task_params.merge(user_id: params[:task][:user_id]))
       if task.save
         render json: task, status: :created
       else
