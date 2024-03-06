@@ -47,6 +47,15 @@ module Api
       end
     end
 
+    def completed
+      start_date = params[:startDate].to_date.beginning_of_day
+      end_date = params[:endDate].to_date.end_of_day
+
+      completed_tasks = Task.where(status: 'completed', completed_date: start_date..end_date)
+
+      render json: completed_tasks
+    end
+
     def overdue
       overdue_tasks = Task.where('due_date < ? AND status = ?', Time.current, 'pending')
       render json: overdue_tasks
