@@ -124,7 +124,7 @@ RSpec.describe 'Tasks API', type: :request do
 
       it 'returns a validation failure message' do
         expect(response).to have_http_status(422)
-        expect(response.body).to match(/Validation failed/)
+        expect(response.body).to match(/Progress must be between 0 and 100/)
       end
     end
   end
